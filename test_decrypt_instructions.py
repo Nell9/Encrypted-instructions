@@ -1,6 +1,6 @@
 import pytest
 
-from main import decrypt_instructions
+from decrypt_instructions import decrypt_instructions
 
 STRINGS = {
     '3[a]2[bc]': 'aaabcbc',
