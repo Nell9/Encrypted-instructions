@@ -28,4 +28,4 @@ def decrypt_instructions(instruction: str) -> str:
 
 
 if __name__ == '__main__':
-    print(decrypt_instructions())
+    print(decrypt_instructions(input()))
