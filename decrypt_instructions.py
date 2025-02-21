@@ -1,59 +1,32 @@
 # id: 133749115
 
-from typing import Optional, Iterable
+
+from typing import Optional
 
 
-BRACKETS = ('[', ']')
-MULTIPLIER_CAPACITY = 3
-
-
-def find_digits_count(string: str) -> Optional[int]:
-    """Возвращает количество чисел в строке."""
-    digits_count = 0
-    for char in string:
-        if char.isdigit():
-            digits_count += 1
-        else:
-            return digits_count
-    return digits_count or None
-
-
-def find_closed_bracket(string: Iterable) -> Optional[int]:
-    """
-    Возвращает издекс последней закрывающейся скобки.
-    При входи [x[x]x] вернет 6.
-    """
-    stack = []
-    for index, char in enumerate(string):
-        if char in BRACKETS:
-            stack.append(char)
-        if stack[-1] == BRACKETS[1]:
-            stack.pop()
-            stack.pop()
-        if stack == []:
-            return index
-    return None
-
-
-def decrypt_instructions(instruction: str):
+def decrypt_instructions(instruction: Optional[str]) -> str:
     """Декодирует строку с инструкциями"""
     decode_string = ''
-    index = 0
-    while index < len(instruction):
+    mulripliers = []
+    mulriplier = ''
+    stack = []
+    for index in range(len(instruction)):
         if instruction[index].isdigit():
-            digits_count = find_digits_count(
-                instruction[index:index+MULTIPLIER_CAPACITY])
-            multiplier = int(instruction[index:index+digits_count])
-            index += digits_count
-            right_index = index + find_closed_bracket(instruction[index:])
-            decode_string += multiplier * decrypt_instructions(
-                instruction[index+1:right_index]
-                if right_index - index > 2
-                else [instruction[index+1]])
-            index = right_index
+            mulriplier += instruction[index]
+            
+        elif instruction[index] == '[':
+            mulripliers.append((int(mulriplier), index))
+            mulriplier = ''
+        elif instruction[index] == ']':
+            if instruction[mulripliers[-1][1]+1 :index-1]:
+                decode_string += instruction[mulripliers[-1][1]:index] * mulripliers[-1][0]          
+            else:  
+                decode_string += instruction[index-1] * mulripliers[-1][0]  
+            mulripliers.pop()
         else:
-            decode_string += instruction[index]
-        index += 1
+            ...
+            #for multiplier in mulripliers:
+            #    decode_string += instruction[index] * multiplier
     return decode_string
 
 
