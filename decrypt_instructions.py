@@ -1,34 +1,31 @@
 # id: 133749115
 
 
-from typing import Optional
-
-
-def decrypt_instructions(instruction: Optional[str]) -> str:
+def decrypt_instructions(instruction: str) -> str:
     """Декодирует строку с инструкциями"""
-    decode_string = ''
-    mulripliers = []
-    mulriplier = ''
+    decode_instruction = ''
+    curr_values = ''
+    multiplier = 0
     stack = []
-    for index in range(len(instruction)):
-        if instruction[index].isdigit():
-            mulriplier += instruction[index]
-            
-        elif instruction[index] == '[':
-            mulripliers.append((int(mulriplier), index))
-            mulriplier = ''
-        elif instruction[index] == ']':
-            if instruction[mulripliers[-1][1]+1 :index-1]:
-                decode_string += instruction[mulripliers[-1][1]:index] * mulripliers[-1][0]          
-            else:  
-                decode_string += instruction[index-1] * mulripliers[-1][0]  
-            mulripliers.pop()
+    for char in instruction:
+        if char.isdigit():
+            multiplier = multiplier * 10 + int(char)
+        elif char == '[':
+            stack.append((curr_values, multiplier))
+            curr_values = ''
+            multiplier = 0
+        elif char == ']':
+            prev_values, local_mulriplier = stack.pop()
+            curr_values = prev_values + (curr_values * local_mulriplier)
+            if stack == []:
+                decode_instruction += curr_values
+                curr_values = ''
         else:
-            ...
-            #for multiplier in mulripliers:
-            #    decode_string += instruction[index] * multiplier
-    return decode_string
+            curr_values += char
+
+    decode_instruction += curr_values
+    return decode_instruction
 
 
 if __name__ == '__main__':
-    print(decrypt_instructions(input()))
+    print(decrypt_instructions())
