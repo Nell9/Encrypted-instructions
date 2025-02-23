@@ -1,29 +1,27 @@
-# id: 133910664
-
-MAX_MULTIPLIER_SIZE = 300
-MULTIPLIERS = tuple(str(i) for i in range(MAX_MULTIPLIER_SIZE))
+# id: 133912933
 
 
-def decrypt_encrypted_texts(encrypted_text: str) -> str:
+MULTIPLIERS = ('0', '1', '2', '3', '4', '5', '6', '7', '8', '9')
+
+
+def decrypt(encrypted_text: str) -> str:
     """Декодирует строку с инструкциями"""
-    decoded_text = ''
-    multiplier = ''
+    decoded, multiplier = '', ''
     stack = []
     for char in encrypted_text:
         match char:
-            case char if (char in MULTIPLIERS):
+            case _ if char in MULTIPLIERS:
                 multiplier = multiplier + char
             case '[':
-                stack.append([decoded_text, int(multiplier)])
-                multiplier = ''
-                decoded_text = ''
+                stack.append([decoded, int(multiplier)])
+                multiplier, decoded = '', ''
             case ']':
-                prev_values, local_mulriplier = stack.pop()
-                decoded_text = prev_values + decoded_text * local_mulriplier
+                previouse_decoded, local_multiplier = stack.pop()
+                decoded = previouse_decoded + decoded * local_multiplier
             case _:
-                decoded_text += char
-    return decoded_text
+                decoded += char
+    return decoded
 
 
 if __name__ == '__main__':
-    print(decrypt_encrypted_texts(input()))
+    print(decrypt(input()))
