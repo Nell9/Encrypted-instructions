@@ -1,23 +1,28 @@
-# id: 133912933
+# id: 133918958
 
 
-MULTIPLIERS = ('0', '1', '2', '3', '4', '5', '6', '7', '8', '9')
+import string
 
 
-def decrypt(encrypted_text: str) -> str:
+DIGITS = string.digits
+
+
+def decrypt(encrypted: str) -> str:
     """Декодирует строку с инструкциями"""
-    decoded, multiplier = '', ''
+    decoded = ''
+    multiplier = ''
     stack = []
-    for char in encrypted_text:
+    for char in encrypted:
         match char:
-            case _ if char in MULTIPLIERS:
+            case _ if char in DIGITS:
                 multiplier = multiplier + char
             case '[':
-                stack.append([decoded, int(multiplier)])
-                multiplier, decoded = '', ''
+                stack.append((decoded, int(multiplier)))
+                multiplier = ''
+                decoded = ''
             case ']':
-                previouse_decoded, local_multiplier = stack.pop()
-                decoded = previouse_decoded + decoded * local_multiplier
+                previouse_decoded, multiplier_for_decoded = stack.pop()
+                decoded = previouse_decoded + decoded * multiplier_for_decoded
             case _:
                 decoded += char
     return decoded
